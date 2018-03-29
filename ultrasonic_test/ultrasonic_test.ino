@@ -5,17 +5,17 @@
 // https://github.com/sparkfun/HC-SR04_UltrasonicSensor/blob/master/Firmware/HC-SR04_UltrasonicSensorExample/HC-SR04_UltrasonicSensorExample.ino
 
 // Utrasonic sensor ports
-int Trigger = A0;
-int Echo = A1;
+const int Trigger = A0;
+const int Echo = A1;
 
 // Over 400 cm (23200 us pulse) is out of range
 const unsigned int MAX_DISTANCE = 23200;
 
 // Beep port
-int Beep = 12;
+const int Beep = 12;
 
 // Key port
-int Key = 13;
+const int Key = 13;
 
 // Setup pin modes and initialization values
 void setup()
