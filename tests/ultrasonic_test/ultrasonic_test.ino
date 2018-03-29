@@ -6,7 +6,7 @@
  * | Ultrasonic Trigger (G) | A0   |
  * | Ultrasonic Echo (RYB)  | A1   |
  * | Beeper                 | D12  |
- * | Buzzer (KEY1)          | D13  |
+ * | Button (KEY1)          | D13  |
  *
  * Documentation/Tutorial from sparkfun
  * https://www.sparkfun.com/products/13959
@@ -71,7 +71,9 @@ void beeps(int count, int time)
 // Ensures BUTTON is pressed before continuing execution
 void pressToStart()
 {
-  int isPressed = digitalRead(BUTTON);
+  int isPressed;
+
+  isPressed = digitalRead(BUTTON);
   while (isPressed == HIGH)
   {
     isPressed = digitalRead(BUTTON);
