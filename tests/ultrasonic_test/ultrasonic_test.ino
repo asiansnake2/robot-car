@@ -1,21 +1,32 @@
-// Documentation/Tutorial from sparkfun
-// https://www.sparkfun.com/products/13959
+/*******************************************************************************
+ * Testing the ultrasonic sensor with a beep-meter
+ * Expects:
+ * | Name                   | Port |
+ * |------------------------|------|
+ * | Ultrasonic Trigger (G) | A0   |
+ * | Ultrasonic Echo (RYB)  | A1   |
+ * | Beeper                 | D12  |
+ * | Buzzer (KEY1)          | D13  |
+ *
+ * Documentation/Tutorial from sparkfun
+ * https://www.sparkfun.com/products/13959
+ *
+ * GitHub Sample
+ * https://github.com/sparkfun/HC-SR04_UltrasonicSensor/blob/master/Firmware/HC-SR04_UltrasonicSensorExample/HC-SR04_UltrasonicSensorExample.ino
+ ******************************************************************************/
 
-// GitHub Sample
-// https://github.com/sparkfun/HC-SR04_UltrasonicSensor/blob/master/Firmware/HC-SR04_UltrasonicSensorExample/HC-SR04_UltrasonicSensorExample.ino
-
-// Utrasonic sensor ports
-const int Trigger = A0;
-const int Echo = A1;
+// Ultrasonic sensor ports
+const int TRIGGER = A0;
+const int ECHO = A1;
 
 // Over 400 cm (23200 us pulse) is out of range
 const unsigned int MAX_DISTANCE = 23200;
 
-// Beep port
-const int Beep = 12;
+// BEEPER port
+const int BEEPER = 12;
 
-// Key port
-const int Key = 13;
+// Start BUTTON port
+const int BUTTON = 13;
 
 // Setup pin modes and initialization values
 void setup()
@@ -24,21 +35,27 @@ void setup()
   Serial.begin(9600);
 
   // Ultrasonic pin modes
-  pinMode(Trigger, OUTPUT);
-  digitalWrite(Trigger, LOW);
+  pinMode(TRIGGER, OUTPUT);
+  digitalWrite(TRIGGER, LOW);
+
+  // BEEPER sound pin mode
+  pinMode(BEEPER, OUTPUT);
+
+  // Start BUTTON pin mode
+  pinMode(BUTTON, INPUT);
 }
 
-// Beep for the specified amount of time,
-// no delay following beep
+// Beep with BEEPER for the specified amount of time,
+// no delay following BEEPER
 // @param time: time in ms to beep for
 void beep(int time)
 {
-  digitalWrite(Beep, HIGH);
+  digitalWrite(BEEPER, HIGH);
   delay(time);
-  digitalWrite(Beep, LOW);
+  digitalWrite(BEEPER, LOW);
 }
 
-// Beep specified number of times for a duration,
+// Beep with BEEPER for specified number of times for a duration,
 // with same amount of delay time following each beep
 // @param count: number of times to beep
 // @param time: time in ms to beep and pause for
@@ -51,19 +68,20 @@ void beeps(int count, int time)
   }
 }
 
-// Ensures key is pressed before continuing execution
+// Ensures BUTTON is pressed before continuing execution
 void pressToStart()
 {
-  int isPressed = digitalRead(Key);
+  int isPressed = digitalRead(BUTTON);
   while (isPressed == HIGH)
   {
-    isPressed = digitalRead(Key);
+    isPressed = digitalRead(BUTTON);
   }
 
   beeps(1, 1000);
 }
 
-// Mesaure distance using ultrasonic sensor
+// Measure distance using ultrasonic sensor
+// Beep rate inversely proportional to distance from object
 // Print out both inches and cm measurements
 void readDistance()
 {
@@ -73,16 +91,16 @@ void readDistance()
   float cm;
   float inches;
 
-  // Hold trigger pin high for at least 10us to obtain reading
-  digitalWrite(Trigger, HIGH);
+  // Hold TRIGGER pin high for at least 10us to obtain reading
+  digitalWrite(TRIGGER, HIGH);
   delayMicroseconds(10);
-  digitalWrite(Trigger, LOW);
+  digitalWrite(TRIGGER, LOW);
 
   // Time the pulse
-  while (digitalRead(Echo) == 0) // wait for echo pulse to begin
+  while (digitalRead(ECHO) == 0) // wait for ECHO pulse to begin
     ;
   t1 = micros();                 // start time
-  while (digitalRead(Echo) == 1) // wait for echo pulse to end
+  while (digitalRead(ECHO) == 1) // wait for ECHO pulse to end
     ;
   t2 = micros();        // end time
   pulseWidth = t2 - t1; // total time for pulse
@@ -94,10 +112,12 @@ void readDistance()
   // Print out values to Serial if in range
   if (pulseWidth > MAX_DISTANCE)
   {
-    Serial.print("Out of Range");
+    Serial.println("Out of Range");
   }
   else
   {
+    // beep delay changes proportional to distance
+    beeps(1, (float)pulseWidth / 100);
     Serial.print("Distance (cm): ");
     Serial.println(cm);
     Serial.print("Distance (in): ");
@@ -109,10 +129,9 @@ void loop()
 {
   pressToStart();
 
-  // Print out distances every half second
+  // Print out distances (delay with beeps)
   while (1)
   {
     readDistance();
-    delay(500);
   }
 }
