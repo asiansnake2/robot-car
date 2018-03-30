@@ -77,20 +77,56 @@ void pressToStart()
     isPressed = digitalRead(BUTTON);
   }
 
-  beeps(1, 1000);
+  beeps(1, 250);
+}
+
+// Move forward for the specified amount of time
+// @param time: minimum time in ms to move for
+// @param speed: percentage of max speed
+void forward(int time, float speed)
+{
+  int mappedSpeed = map(speed, 0, 100, 0, 255);
+  // Enable right motor forward
+  analogWrite(RIGHT_MOTOR_LEVEL, int(mappedSpeed));
+  digitalWrite(RIGHT_MOTOR_FORWARD, HIGH);
+  digitalWrite(RIGHT_MOTOR_BACKWARD, LOW);
+  // Enable left motor forward
+  analogWrite(LEFT_MOTOR_LEVEL, int(mappedSpeed));
+  digitalWrite(LEFT_MOTOR_FORWARD, HIGH);
+  digitalWrite(LEFT_MOTOR_BACKWARD, LOW);
+  // Delay for time
+  delay(time);
+}
+
+// Move backward for the specified amount of time
+// @param time: minimum time in ms to move for
+// @param speed: percentage of max speed
+void backward(int time, float speed)
+{
+  // Enable right motor backward
+  analogWrite(RIGHT_MOTOR_LEVEL, int(map(speed, 0, 100, 0, 255)));
+  digitalWrite(RIGHT_MOTOR_FORWARD, LOW);
+  digitalWrite(RIGHT_MOTOR_BACKWARD, HIGH);
+  // Enable left motor backward
+  analogWrite(LEFT_MOTOR_LEVEL, int(map(speed, 0, 100, 0, 255)));
+  digitalWrite(LEFT_MOTOR_FORWARD, LOW);
+  digitalWrite(LEFT_MOTOR_BACKWARD, HIGH);
+  // Delay for time
+  delay(time);
 }
 
 // Turn right for the specified amount of time,
 // single side rotation only
-// @param time: time in ms to turn for
-void right(int time)
+// @param time: minimum time in ms to turn for
+// @param speed: percentage of max speed
+void right(int time, float speed)
 {
   // Disable right motor
   analogWrite(RIGHT_MOTOR_LEVEL, 0);
   digitalWrite(RIGHT_MOTOR_FORWARD, LOW);
   digitalWrite(RIGHT_MOTOR_BACKWARD, LOW);
   // Enable left motor forward
-  analogWrite(LEFT_MOTOR_LEVEL, 200);
+  analogWrite(LEFT_MOTOR_LEVEL, int(map(speed, 0, 100, 0, 255)));
   digitalWrite(LEFT_MOTOR_FORWARD, HIGH);
   digitalWrite(LEFT_MOTOR_BACKWARD, LOW);
   // Delay for time
@@ -99,6 +135,7 @@ void right(int time)
 
 // Turn left for the specified percentage of max speed,
 // single side rotation only
+// @param time: minimum time in ms to turn for
 // @param speed: percentage of max speed
 void left(int time, float speed)
 {
@@ -107,14 +144,16 @@ void left(int time, float speed)
   digitalWrite(LEFT_MOTOR_FORWARD, LOW);
   digitalWrite(LEFT_MOTOR_BACKWARD, LOW);
   // Enable right motor forward
-  analogWrite(RIGHT_MOTOR_LEVEL, int(speed/100*255));
+  analogWrite(RIGHT_MOTOR_LEVEL, int(map(speed, 0, 100, 0, 255)));
   digitalWrite(RIGHT_MOTOR_FORWARD, HIGH);
   digitalWrite(RIGHT_MOTOR_BACKWARD, LOW);
   // Delay for time
   delay(time);
 }
 
-void brake()
+// Stop the robot
+// @param time: minimum time in ms to brake for
+void brake(int time)
 {
   // Disable right motor
   analogWrite(RIGHT_MOTOR_LEVEL, 0);
@@ -124,6 +163,8 @@ void brake()
   analogWrite(LEFT_MOTOR_LEVEL, 0);
   digitalWrite(LEFT_MOTOR_LEVEL, LOW);
   digitalWrite(LEFT_MOTOR_FORWARD, LOW);
+  // Delay for time
+  delay(time);
 }
 
 // Main robot movement loop, runs repeatedly
@@ -131,7 +172,11 @@ void loop()
 {
   pressToStart();
 
-  right(1000);
-  left(1000, 100);
-  brake();
+  forward(5000, 50);
+  forward(2000, 75);
+  forward(1000, 100);
+  backward(1000, 100);
+  right(1000, 75);
+  left(1000, 75);
+  brake(0);
 }
