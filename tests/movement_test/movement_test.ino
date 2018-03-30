@@ -7,8 +7,8 @@ const int RIGHT_MOTOR_FORWARD = 6;
 const int RIGHT_MOTOR_BACKWARD = 7;
 
 // Left motor ports
-const int LEFT_MOTOR_LEVEL = 8;
-const int LEFT_MOTOR_FORWARD = 9;
+const int LEFT_MOTOR_FORWARD = 8;
+const int LEFT_MOTOR_BACKWARD = 9;
 const int LEFT_MOTOR_LEVEL = 10;
 
 // BEEPER port
@@ -27,8 +27,8 @@ void setup()
 
   // Left motor pin modes
   pinMode(LEFT_MOTOR_LEVEL, OUTPUT);
-  pinMode(LEFT_MOTOR_LEVEL, OUTPUT);
   pinMode(LEFT_MOTOR_FORWARD, OUTPUT);
+  pinMode(LEFT_MOTOR_BACKWARD, OUTPUT);
 
   // Beep sound pin mode
   // mute = LOW
@@ -91,8 +91,25 @@ void right(int time)
   digitalWrite(RIGHT_MOTOR_BACKWARD, LOW);
   // Enable left motor forward
   analogWrite(LEFT_MOTOR_LEVEL, 200);
-  digitalWrite(LEFT_MOTOR_LEVEL, HIGH);
+  digitalWrite(LEFT_MOTOR_FORWARD, HIGH);
+  digitalWrite(LEFT_MOTOR_BACKWARD, LOW);
+  // Delay for time
+  delay(time);
+}
+
+// Turn left for the specified percentage of max speed,
+// single side rotation only
+// @param speed: percentage of max speed
+void left(int time, float speed)
+{
+  // Disable left motor
+  analogWrite(LEFT_MOTOR_LEVEL, 0);
   digitalWrite(LEFT_MOTOR_FORWARD, LOW);
+  digitalWrite(LEFT_MOTOR_BACKWARD, LOW);
+  // Enable right motor forward
+  analogWrite(RIGHT_MOTOR_LEVEL, int(speed/100*255));
+  digitalWrite(RIGHT_MOTOR_FORWARD, HIGH);
+  digitalWrite(RIGHT_MOTOR_BACKWARD, LOW);
   // Delay for time
   delay(time);
 }
@@ -115,5 +132,6 @@ void loop()
   pressToStart();
 
   right(1000);
+  left(1000, 100);
   brake();
 }
