@@ -91,6 +91,20 @@ void right(int time)
   analogWrite(LeftMotorLevel, 200);
   digitalWrite(LeftMotorForward, HIGH);
   digitalWrite(LeftMotorBackward, LOW);
+  // Delay for time
+  delay(time);
+}
+
+void brake()
+{
+  // Disable right motor
+  analogWrite(RightMotorLevel, 0);
+  digitalWrite(RightMotorForward, LOW);
+  digitalWrite(RightMotorBackward, LOW);
+  // Disable left motor
+  analogWrite(LeftMotorLevel, 0);
+  digitalWrite(LeftMotorForward, LOW);
+  digitalWrite(LeftMotorBackward, LOW);
 }
 
 // Main robot movement loop, runs repeatedly
@@ -99,4 +113,5 @@ void loop()
   pressToStart();
 
   right(1000);
+  brake();
 }
