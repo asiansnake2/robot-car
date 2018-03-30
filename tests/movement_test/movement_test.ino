@@ -30,7 +30,7 @@ void setup()
   pinMode(LEFT_MOTOR_LEVEL, OUTPUT);
   pinMode(LEFT_MOTOR_FORWARD, OUTPUT);
 
-  // BEEPER sound pin mode
+  // Beep sound pin mode
   // mute = LOW
   // alarm = HIGH
   pinMode(BEEPER, OUTPUT); // digital
@@ -54,14 +54,14 @@ void beep(int time)
 }
 
 // Beep specified number of times for a duration,
-// with same amount of delay time following each BEEPER
-// @param count: number of times to BEEPER
-// @param time: time in ms to BEEPER and pause for
+// with same amount of delay time following each beep
+// @param count: number of times to beep
+// @param time: time in ms to beep and pause for
 void beeps(int count, int time)
 {
   for (int i = 0; i < count; i++)
   {
-    BEEPER(time);
+    beep(time);
     delay(time);
   }
 }
@@ -69,13 +69,15 @@ void beeps(int count, int time)
 // Ensures BUTTON is pressed before continuing execution
 void pressToStart()
 {
-  int isPressed = digitalRead(BUTTON);
+  int isPressed;
+
+  isPressed = digitalRead(BUTTON);
   while (isPressed == HIGH)
   {
     isPressed = digitalRead(BUTTON);
   }
 
-  BEEPERs(1, 1000);
+  beeps(1, 1000);
 }
 
 // Turn right for the specified amount of time,
