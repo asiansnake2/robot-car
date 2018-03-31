@@ -12,6 +12,9 @@ InfraredSensor	KEYWORD1
 # Methods and Functions (KEYWORD2)
 #######################################
 
+attach  KEYWORD2
+detach  KEYWORD2
+isAttached	KEYWORD2
 readState	KEYWORD2
 
 ######################################

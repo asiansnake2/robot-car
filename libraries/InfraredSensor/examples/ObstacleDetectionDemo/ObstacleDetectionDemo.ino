@@ -1,5 +1,5 @@
 /*******************************************************************************
- * InfraredSensorDemo.ino
+ * ObstacleDetectionDemo.ino
  * Demo for pair of infrared sensors using beeps for detection type.
  * Created by Brian Tom on March 30, 2018.
  * Released into the public domain.
@@ -19,6 +19,9 @@
 const int INFRARED_SENSOR_RIGHT = A4;
 const int INFRARED_SENSOR_LEFT = A5;
 
+InfraredSensor infraredSensorRight;
+InfraredSensor infraredSensorLeft;
+
 // BEEPER port
 const int BEEPER = 12;
 
@@ -31,6 +34,10 @@ void setup()
   // View sensor output in Serial monitor
   Serial.begin(9600);
 
+  // Attach sensors
+  infraredSensorRight.attach(INFRARED_SENSOR_RIGHT);
+  infraredSensorLeft.attach(INFRARED_SENSOR_LEFT);
+
   // BEEPER sound pin mode
   pinMode(BEEPER, OUTPUT);
 
@@ -40,8 +47,6 @@ void setup()
 
 void loop()
 {
-  InfraredSensor infraredSensorRight(INFRARED_SENSOR_RIGHT);
-  InfraredSensor infraredSensorLeft(INFRARED_SENSOR_LEFT);
   int infraredSensorStateRight;
   int infraredSensorStateLeft;
   const int beepTime = 1000; // maximum beep time for detection types
@@ -115,5 +120,5 @@ void pressToStart()
     isPressed = digitalRead(BUTTON);
   }
 
-  beeps(1, 1000);
+  beeps(1, 100);
 }
