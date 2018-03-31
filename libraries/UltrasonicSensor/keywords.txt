@@ -1,0 +1,27 @@
+#######################################
+# Syntax Coloring Map For Test
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+UltrasonicSensor	KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+readPulseWidth	KEYWORD2
+readToInches	KEYWORD2
+readToCentimeters	KEYWORD2
+toInches	KEYWORD2
+toCentimeters	KEYWORD2
+
+######################################
+# Instances (KEYWORD2)
+#######################################
+
+#######################################
+# Constants (LITERAL1)
+#######################################
