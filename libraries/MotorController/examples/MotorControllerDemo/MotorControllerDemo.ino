@@ -21,14 +21,14 @@
 #include <MotorController.h>
 
 // Right motor ports
-const int RIGHT_MOTOR_LEVEL = 5;
+const int RIGHT_MOTOR_POWER = 5;
 const int RIGHT_MOTOR_FORWARD = 6;
 const int RIGHT_MOTOR_BACKWARD = 7;
 
 // Left motor ports
 const int LEFT_MOTOR_FORWARD = 8;
 const int LEFT_MOTOR_BACKWARD = 9;
-const int LEFT_MOTOR_LEVEL = 10;
+const int LEFT_MOTOR_POWER = 10;
 
 // BEEPER port
 const int BEEPER = 12;
@@ -57,8 +57,8 @@ void loop()
   pressToStart();
 
   // Set up the motor controller
-  Motor rightMotor = {RIGHT_MOTOR_LEVEL, RIGHT_MOTOR_FORWARD, RIGHT_MOTOR_BACKWARD};
-  Motor leftMotor = {LEFT_MOTOR_LEVEL, LEFT_MOTOR_FORWARD, LEFT_MOTOR_BACKWARD};
+  Motor rightMotor = {RIGHT_MOTOR_POWER, RIGHT_MOTOR_FORWARD, RIGHT_MOTOR_BACKWARD};
+  Motor leftMotor = {LEFT_MOTOR_POWER, LEFT_MOTOR_FORWARD, LEFT_MOTOR_BACKWARD};
   MotorController mc(rightMotor, leftMotor, 100);
 
   // Do the dance
