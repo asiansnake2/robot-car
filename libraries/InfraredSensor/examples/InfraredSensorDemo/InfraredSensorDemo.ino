@@ -1,6 +1,8 @@
 /*******************************************************************************
- * Testing the infrared sensors (on top), may need to adjust sensing distance
- * to more accurately detect obstacles.
+ * InfraredSensorDemo.ino
+ * Demo for pair of infrared sensors using beeps for detection type.
+ * Created by Brian Tom on March 30, 2018.
+ * Released into the public domain.
  *
  * Expects:
  * | Name                        | Port |
@@ -10,6 +12,8 @@
  * | Beeper                      | D12  |
  * | Button (KEY1)               | D13  |
  ******************************************************************************/
+
+#include <InfraredSensor.h>
 
 // Infrared obstacle avoidance sensors
 const int INFRARED_SENSOR_RIGHT = A4;
@@ -27,15 +31,54 @@ void setup()
   // View sensor output in Serial monitor
   Serial.begin(9600);
 
-  // Infrared sensor pin modes
-  pinMode(INFRARED_SENSOR_RIGHT, INPUT);
-  pinMode(INFRARED_SENSOR_LEFT, INPUT);
-
   // BEEPER sound pin mode
   pinMode(BEEPER, OUTPUT);
 
   // Start BUTTON pin mode
   pinMode(BUTTON, INPUT);
+}
+
+void loop()
+{
+  InfraredSensor infraredSensorRight{INFRARED_SENSOR_RIGHT};
+  InfraredSensor infraredSensorLeft{INFRARED_SENSOR_LEFT};
+  int infraredSensorStateRight;
+  int infraredSensorStateLeft;
+  const int beepTime = 1000; // maximum beep time for detection types
+
+  pressToStart();
+
+  // Print out detections and beep based on detection type
+  while (1)
+  {
+    infraredSensorStateRight = infraredSensorRight.readState();
+    infraredSensorStateLeft = infraredSensorLeft.readState();
+
+    // No obstacle ahead
+    if (infraredSensorStateRight == HIGH && infraredSensorStateLeft == HIGH)
+    {
+      Serial.println("All clear ahead.");
+      beeps(1, beepTime);
+    }
+    // Obstacle on right side
+    else if (infraredSensorStateRight == LOW && infraredSensorStateLeft == HIGH)
+    {
+      Serial.println("Obstacle on right.");
+      beeps(1, beepTime / 2);
+    }
+    // Obstacle on left side
+    else if (infraredSensorStateRight == HIGH && infraredSensorStateLeft == LOW)
+    {
+      Serial.println("Obstacle on left.");
+      beeps(1, beepTime / 3);
+    }
+    // Obstacle on both sides
+    else
+    {
+      Serial.println("Obstacle ahead.");
+      beeps(1, beepTime / 4);
+    }
+  }
 }
 
 // Beep with BEEPER for the specified amount of time,
@@ -73,45 +116,4 @@ void pressToStart()
   }
 
   beeps(1, 1000);
-}
-
-void loop()
-{
-  int infraredSensorStateRight;
-  int infraredSensorStateLeft;
-  const int beepTime = 1000;
-
-  pressToStart();
-
-  // Print out detections and beep based on detection type
-  while (1)
-  {
-    infraredSensorStateRight = digitalRead(INFRARED_SENSOR_RIGHT);
-    infraredSensorStateLeft = digitalRead(INFRARED_SENSOR_LEFT);
-
-    // No obstacle ahead
-    if (infraredSensorStateRight == HIGH && infraredSensorStateLeft == HIGH)
-    {
-      Serial.println("All clear ahead.");
-      beeps(1, beepTime);
-    }
-    // Obstacle on right side
-    else if (infraredSensorStateRight == LOW && infraredSensorStateLeft == HIGH)
-    {
-      Serial.println("Obstacle on right.");
-      beeps(1, beepTime / 2);
-    }
-    // Obstacle on left side
-    else if (infraredSensorStateRight == HIGH && infraredSensorStateLeft == LOW)
-    {
-      Serial.println("Obstacle on left.");
-      beeps(1, beepTime / 3);
-    }
-    // Obstacle on both sides
-    else
-    {
-      Serial.println("Obstacle ahead.");
-      beeps(1, beepTime / 4);
-    }
-  }
 }
