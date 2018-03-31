@@ -3,27 +3,17 @@
  * Library for moving the robot.
  * Created by Brian Tom on March 30, 2018.
  * Released into the public domain.
- *
- * Default constructor assumes the following ports:
- * | Name                    | Port |
- * |-------------------------|------|
- * | Right Motor Power Level | D5   |
- * | Right Motor Forward     | D6   |
- * | Right Motor Backward    | D7   |
- * | Left Motor Forward      | D8   |
- * | Left Motor Backward     | D9   |
- * | Left Motor Power Level  | D10  |
- *
- * Default constructor also sets the initial power level to 75%.
  ******************************************************************************/
 
 #ifndef MOTORCONTROLLER_H
 #define MOTORCONTROLLER_H
 
+#include "Arduino.h"
+
 // Motor contains 3 port values
 struct Motor
 {
-  int level;
+  int power;
   int forward;
   int backward;
 };
@@ -32,9 +22,7 @@ struct Motor
 class MotorController
 {
 public:
-  // Default constructor, speed initially set to 75%
-  MotorController();
-  // Constructor with custom ports and speed
+  // Constructor with motor controller ports and speed
   MotorController(const Motor &rightMotor, const Motor &leftMotor, const float &speed);
 
   // Set the speed of the movement
@@ -42,7 +30,6 @@ public:
   // Get the current movement speed of the robot
   float getSpeed() const;
 
-  // Movement
   // Move forward for the specified amount of time at set speed
   // @param time: minimum time in ms to move for
   void forward(const int &time) const;
@@ -72,14 +59,9 @@ public:
   void brake(const int &time) const;
 
 private:
-  // Right motor ports
-  int RIGHT_MOTOR_LEVEL;
-  int RIGHT_MOTOR_FORWARD;
-  int RIGHT_MOTOR_BACKWARD;
-  // Left motor ports
-  int LEFT_MOTOR_FORWARD;
-  int LEFT_MOTOR_BACKWARD;
-  int LEFT_MOTOR_LEVEL;
+  // Right and left ports
+  Motor RIGHT_MOTOR;
+  Motor LEFT_MOTOR;
   // MotorController speed (percentage of maximum speed)
   float m_speed;
 };
