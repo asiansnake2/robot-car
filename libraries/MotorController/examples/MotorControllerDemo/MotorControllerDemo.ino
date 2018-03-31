@@ -59,7 +59,7 @@ void loop()
   // Set up the motor controller
   Motor rightMotor = {RIGHT_MOTOR_LEVEL, RIGHT_MOTOR_FORWARD, RIGHT_MOTOR_BACKWARD};
   Motor leftMotor = {LEFT_MOTOR_LEVEL, LEFT_MOTOR_FORWARD, LEFT_MOTOR_BACKWARD};
-  MotorController mc{rightMotor, leftMotor, 100};
+  MotorController mc(rightMotor, leftMotor, 100);
 
   // Do the dance
   while (1)

@@ -40,8 +40,8 @@ void setup()
 
 void loop()
 {
-  InfraredSensor infraredSensorRight{INFRARED_SENSOR_RIGHT};
-  InfraredSensor infraredSensorLeft{INFRARED_SENSOR_LEFT};
+  InfraredSensor infraredSensorRight(INFRARED_SENSOR_RIGHT);
+  InfraredSensor infraredSensorLeft(INFRARED_SENSOR_LEFT);
   int infraredSensorStateRight;
   int infraredSensorStateLeft;
   const int beepTime = 1000; // maximum beep time for detection types

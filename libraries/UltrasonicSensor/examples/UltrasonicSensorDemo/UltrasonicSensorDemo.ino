@@ -54,7 +54,7 @@ void loop()
 {
   pressToStart();
 
-  UltrasonicSensor sensor{TRIGGER, ECHO};
+  UltrasonicSensor sensor(TRIGGER, ECHO);
   float pulseWidth;
 
   // Print out distances (delay with beeps)
