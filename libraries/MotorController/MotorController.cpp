@@ -1,3 +1,22 @@
+/*******************************************************************************
+ * MotorController.cpp
+ * Library for moving the robot.
+ * Created by Brian Tom on March 30, 2018.
+ * Released into the public domain.
+ *
+ * Default constructor assumes the following ports:
+ * | Name                    | Port |
+ * |-------------------------|------|
+ * | Right Motor Power Level | D5   |
+ * | Right Motor Forward     | D6   |
+ * | Right Motor Backward    | D7   |
+ * | Left Motor Forward      | D8   |
+ * | Left Motor Backward     | D9   |
+ * | Left Motor Power Level  | D10  |
+ *
+ * Default constructor also sets the initial power level to 75%.
+ ******************************************************************************/
+
 #include "Arduino.h"
 #include "MotorController.h"
 

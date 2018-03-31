@@ -1,7 +1,26 @@
-#ifndef MOTORCONTROLLER_H
+/*******************************************************************************
+ * MotorController.h
+ * Library for moving the robot.
+ * Created by Brian Tom on March 30, 2018.
+ * Released into the public domain.
+ *
+ * Default constructor assumes the following ports:
+ * | Name                    | Port |
+ * |-------------------------|------|
+ * | Right Motor Power Level | D5   |
+ * | Right Motor Forward     | D6   |
+ * | Right Motor Backward    | D7   |
+ * | Left Motor Forward      | D8   |
+ * | Left Motor Backward     | D9   |
+ * | Left Motor Power Level  | D10  |
+ *
+ * Default constructor also sets the initial power level to 75%.
+ ******************************************************************************/
 
+#ifndef MOTORCONTROLLER_H
 #define MOTORCONTROLLER_H
 
+// Motor contains 3 port values
 struct Motor
 {
   int level;
@@ -9,6 +28,7 @@ struct Motor
   int backward;
 };
 
+// Controls the robots movement
 class MotorController
 {
 public:
@@ -17,8 +37,9 @@ public:
   // Constructor with custom ports and speed
   MotorController(const Motor &rightMotor, const Motor &leftMotor, const float &speed);
 
-  // Speed
+  // Set the speed of the movement
   void setSpeed(const float &speed);
+  // Get the current movement speed of the robot
   float getSpeed() const;
 
   // Movement

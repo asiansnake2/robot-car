@@ -1,0 +1,32 @@
+#######################################
+# Syntax Coloring Map For MotorController
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+Motor	KEYWORD1
+MotorController	KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+setSpeed	KEYWORD2
+getSpeed	KEYWORD2
+forward	KEYWORD2
+backward	KEYWORD2
+right	KEYWORD2
+spinRight	KEYWORD2
+left	KEYWORD2
+spinLeft	KEYWORD2
+brake	KEYWORD2
+
+######################################
+# Instances (KEYWORD2)
+#######################################
+
+#######################################
+# Constants (LITERAL1)
+#######################################
