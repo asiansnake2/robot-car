@@ -15,6 +15,8 @@
  * https://github.com/sparkfun/HC-SR04_UltrasonicSensor/blob/master/Firmware/HC-SR04_UltrasonicSensorExample/HC-SR04_UltrasonicSensorExample.ino
  ******************************************************************************/
 
+#include <UltrasonicSensor.h>
+
 // Ultrasonic sensor ports
 const int TRIGGER = A0;
 const int ECHO = A1;
@@ -82,58 +84,30 @@ void pressToStart()
   beeps(1, 1000);
 }
 
-// Measure distance using ultrasonic sensor
-// Beep rate inversely proportional to distance from object
-// Print out both inches and cm measurements
-void readDistance()
-{
-  unsigned long t1;
-  unsigned long t2;
-  unsigned long pulseWidth;
-  float cm;
-  float inches;
-
-  // Hold TRIGGER pin high for at least 10us to obtain reading
-  digitalWrite(TRIGGER, HIGH);
-  delayMicroseconds(10);
-  digitalWrite(TRIGGER, LOW);
-
-  // Time the pulse
-  while (digitalRead(ECHO) == 0) // wait for ECHO pulse to begin
-    ;
-  t1 = micros();                 // start time
-  while (digitalRead(ECHO) == 1) // wait for ECHO pulse to end
-    ;
-  t2 = micros();        // end time
-  pulseWidth = t2 - t1; // total time for pulse
-
-  // Convert pulse to cm and inches
-  cm = pulseWidth / 58.0;
-  inches = pulseWidth / 148.0;
-
-  // Print out values to Serial if in range
-  if (pulseWidth > MAX_DISTANCE)
-  {
-    Serial.println("Out of Range");
-  }
-  else
-  {
-    // beep delay changes proportional to distance
-    beeps(1, (float)pulseWidth / 100);
-    Serial.print("Distance (cm): ");
-    Serial.println(cm);
-    Serial.print("Distance (in): ");
-    Serial.println(inches);
-  }
-}
-
 void loop()
 {
   pressToStart();
 
+  UltrasonicSensor sensor{TRIGGER, ECHO};
+  float pulseWidth;
+
   // Print out distances (delay with beeps)
   while (1)
   {
-    readDistance();
+    pulseWidth = sensor.readPulseWidth();
+    // Print out values to Serial if in range
+    if (pulseWidth > MAX_DISTANCE)
+    {
+      Serial.println("Out of Range");
+    }
+    else
+    {
+      // beep delay changes proportional to distance
+      beeps(1, (float)pulseWidth / 100);
+      Serial.print("Distance (cm): ");
+      Serial.println(sensor.toCentimeters(pulseWidth));
+      Serial.print("Distance (in): ");
+      Serial.println(sensor.toInches(pulseWidth));
+    }
   }
 }
