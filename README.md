@@ -4,6 +4,9 @@
 * [COMPLETED] Understand how to move the car
 * [COMPLETED] Move the car (with remote control)
 * Build obstacle course to test capabilites
+  * Ramp
+  * Maze navigation
+  * Rocky surfaces
 * Autonomous movement through obstacle course
 * [COMPLETED] Geiger Counter Obstacle Detection
 
