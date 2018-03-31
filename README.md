@@ -1,10 +1,11 @@
 # robot-car
 
 ## Things to accomplish
-* Understand how to move the car
-* Move the car (with remote control)
+* [COMPLETED] Understand how to move the car
+* [COMPLETED] Move the car (with remote control)
 * Build obstacle course to test capabilites
 * Autonomous movement through obstacle course
+* [COMPLETED] Geiger Counter Obstacle Detection
 
 
 ## Issues
