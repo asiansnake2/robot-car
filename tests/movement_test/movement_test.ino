@@ -1,6 +1,8 @@
 // Motor Controller Tutorial
 // http://tronixstuff.com/2014/11/25/tutorial-l298n-dual-motor-controller-modules-and-arduino/
 
+#include <MotorController.h>
+
 // Right motor ports
 const int RIGHT_MOTOR_LEVEL = 5;
 const int RIGHT_MOTOR_FORWARD = 6;
@@ -20,16 +22,6 @@ const int BUTTON = 13;
 // Setup pin modes and initialization values
 void setup()
 {
-  // Right motor pin modes
-  pinMode(RIGHT_MOTOR_LEVEL, OUTPUT);
-  pinMode(RIGHT_MOTOR_FORWARD, OUTPUT);
-  pinMode(RIGHT_MOTOR_BACKWARD, OUTPUT);
-
-  // Left motor pin modes
-  pinMode(LEFT_MOTOR_LEVEL, OUTPUT);
-  pinMode(LEFT_MOTOR_FORWARD, OUTPUT);
-  pinMode(LEFT_MOTOR_BACKWARD, OUTPUT);
-
   // Beep sound pin mode
   // mute = LOW
   // alarm = HIGH
@@ -80,103 +72,24 @@ void pressToStart()
   beeps(1, 250);
 }
 
-// Move forward for the specified amount of time
-// @param time: minimum time in ms to move for
-// @param speed: percentage of max speed
-void forward(int time, float speed)
-{
-  int mappedSpeed = map(speed, 0, 100, 0, 255);
-  // Enable right motor forward
-  analogWrite(RIGHT_MOTOR_LEVEL, int(mappedSpeed));
-  digitalWrite(RIGHT_MOTOR_FORWARD, HIGH);
-  digitalWrite(RIGHT_MOTOR_BACKWARD, LOW);
-  // Enable left motor forward
-  analogWrite(LEFT_MOTOR_LEVEL, int(mappedSpeed));
-  digitalWrite(LEFT_MOTOR_FORWARD, HIGH);
-  digitalWrite(LEFT_MOTOR_BACKWARD, LOW);
-  // Delay for time
-  delay(time);
-}
-
-// Move backward for the specified amount of time
-// @param time: minimum time in ms to move for
-// @param speed: percentage of max speed
-void backward(int time, float speed)
-{
-  // Enable right motor backward
-  analogWrite(RIGHT_MOTOR_LEVEL, int(map(speed, 0, 100, 0, 255)));
-  digitalWrite(RIGHT_MOTOR_FORWARD, LOW);
-  digitalWrite(RIGHT_MOTOR_BACKWARD, HIGH);
-  // Enable left motor backward
-  analogWrite(LEFT_MOTOR_LEVEL, int(map(speed, 0, 100, 0, 255)));
-  digitalWrite(LEFT_MOTOR_FORWARD, LOW);
-  digitalWrite(LEFT_MOTOR_BACKWARD, HIGH);
-  // Delay for time
-  delay(time);
-}
-
-// Turn right for the specified amount of time,
-// single side rotation only
-// @param time: minimum time in ms to turn for
-// @param speed: percentage of max speed
-void right(int time, float speed)
-{
-  // Disable right motor
-  analogWrite(RIGHT_MOTOR_LEVEL, 0);
-  digitalWrite(RIGHT_MOTOR_FORWARD, LOW);
-  digitalWrite(RIGHT_MOTOR_BACKWARD, LOW);
-  // Enable left motor forward
-  analogWrite(LEFT_MOTOR_LEVEL, int(map(speed, 0, 100, 0, 255)));
-  digitalWrite(LEFT_MOTOR_FORWARD, HIGH);
-  digitalWrite(LEFT_MOTOR_BACKWARD, LOW);
-  // Delay for time
-  delay(time);
-}
-
-// Turn left for the specified percentage of max speed,
-// single side rotation only
-// @param time: minimum time in ms to turn for
-// @param speed: percentage of max speed
-void left(int time, float speed)
-{
-  // Disable left motor
-  analogWrite(LEFT_MOTOR_LEVEL, 0);
-  digitalWrite(LEFT_MOTOR_FORWARD, LOW);
-  digitalWrite(LEFT_MOTOR_BACKWARD, LOW);
-  // Enable right motor forward
-  analogWrite(RIGHT_MOTOR_LEVEL, int(map(speed, 0, 100, 0, 255)));
-  digitalWrite(RIGHT_MOTOR_FORWARD, HIGH);
-  digitalWrite(RIGHT_MOTOR_BACKWARD, LOW);
-  // Delay for time
-  delay(time);
-}
-
-// Stop the robot
-// @param time: minimum time in ms to brake for
-void brake(int time)
-{
-  // Disable right motor
-  analogWrite(RIGHT_MOTOR_LEVEL, 0);
-  digitalWrite(RIGHT_MOTOR_FORWARD, LOW);
-  digitalWrite(RIGHT_MOTOR_BACKWARD, LOW);
-  // Disable left motor
-  analogWrite(LEFT_MOTOR_LEVEL, 0);
-  digitalWrite(LEFT_MOTOR_LEVEL, LOW);
-  digitalWrite(LEFT_MOTOR_FORWARD, LOW);
-  // Delay for time
-  delay(time);
-}
-
 // Main robot movement loop, runs repeatedly
 void loop()
 {
   pressToStart();
 
-  forward(5000, 50);
-  forward(2000, 75);
-  forward(1000, 100);
-  backward(1000, 100);
-  right(1000, 75);
-  left(1000, 75);
-  brake(0);
+  Motor rightMotor = {RIGHT_MOTOR_LEVEL, RIGHT_MOTOR_FORWARD, RIGHT_MOTOR_BACKWARD};
+  Motor leftMotor = {LEFT_MOTOR_LEVEL, LEFT_MOTOR_FORWARD, LEFT_MOTOR_BACKWARD};
+  MotorController mc{rightMotor, leftMotor, 100};
+
+  while (1)
+  {
+    mc.forward(3000);
+    mc.backward(1000);
+    mc.setSpeed(75);
+    mc.spinLeft(1000);
+    mc.spinRight(2000);
+    mc.setSpeed(100);
+    mc.backward(2000);
+    mc.brake(1000);
+  }
 }
