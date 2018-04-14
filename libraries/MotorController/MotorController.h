@@ -79,7 +79,7 @@ private:
   // Left motor ports
   int LEFT_MOTOR_FORWARD;
   int LEFT_MOTOR_BACKWARD;
-  int LEFT_MOTOR_PWOER;
+  int LEFT_MOTOR_POWER;
   // MotorController speed (percentage of maximum speed)
   float m_speed;
 };
