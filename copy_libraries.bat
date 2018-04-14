@@ -1,10 +1,12 @@
 @echo off
 
 SET source=libraries
-SET destination=C:\Program Files (x86)\Arduino\libraries
+SET destination=%USERPROFILE%\Documents\Arduino\libraries
 
 ECHO Copying files from "%source%" to "%destination%"...
 
-XCOPY "%source%" "%destination%" /t /e
+XCOPY "%source%" "%destination%" /W /F /T /E
 
 ECHO Done.
+
+PAUSE
