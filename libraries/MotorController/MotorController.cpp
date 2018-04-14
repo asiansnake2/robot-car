@@ -31,7 +31,7 @@ MotorController::MotorController()
   LEFT_MOTOR_BACKWARD = 9;
   LEFT_MOTOR_POWER = 10;
   // Set default speed to 75%
-  m_speed = 75;
+  setSpeed(75);
   // Right motor pin modes
   pinMode(RIGHT_MOTOR_POWER, OUTPUT);
   pinMode(RIGHT_MOTOR_FORWARD, OUTPUT);
