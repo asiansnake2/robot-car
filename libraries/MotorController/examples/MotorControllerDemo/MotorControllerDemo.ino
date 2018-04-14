@@ -52,6 +52,28 @@ void setup()
   digitalWrite(BUTTON, HIGH);
 }
 
+// Main robot movement loop, runs repeatedly
+void loop()
+{
+  pressToStart();
+
+  Motor rightMotor = {RIGHT_MOTOR_POWER, RIGHT_MOTOR_FORWARD, RIGHT_MOTOR_BACKWARD};
+  Motor leftMotor = {LEFT_MOTOR_POWER, LEFT_MOTOR_FORWARD, LEFT_MOTOR_BACKWARD};
+  MotorController mc{rightMotor, leftMotor, 100};
+
+  while (1)
+  {
+    mc.forward(3000);
+    mc.backward(1000);
+    mc.setSpeed(75);
+    mc.spinLeft(1000);
+    mc.spinRight(2000);
+    mc.setSpeed(100);
+    mc.backward(2000);
+    mc.brake(1000);
+  }
+}
+
 // Beep for the specified amount of time,
 // no delay following BEEPER
 // @param time: time in ms to BEEPER for
@@ -87,26 +109,4 @@ void pressToStart()
   }
 
   beeps(1, 250);
-}
-
-// Main robot movement loop, runs repeatedly
-void loop()
-{
-  pressToStart();
-
-  Motor rightMotor = {RIGHT_MOTOR_POWER, RIGHT_MOTOR_FORWARD, RIGHT_MOTOR_BACKWARD};
-  Motor leftMotor = {LEFT_MOTOR_POWER, LEFT_MOTOR_FORWARD, LEFT_MOTOR_BACKWARD};
-  MotorController mc{rightMotor, leftMotor, 100};
-
-  while (1)
-  {
-    mc.forward(3000);
-    mc.backward(1000);
-    mc.setSpeed(75);
-    mc.spinLeft(1000);
-    mc.spinRight(2000);
-    mc.setSpeed(100);
-    mc.backward(2000);
-    mc.brake(1000);
-  }
 }
