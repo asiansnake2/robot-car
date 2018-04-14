@@ -43,13 +43,36 @@ void setup()
   // mute = LOW
   // alarm = HIGH
   pinMode(BEEPER, OUTPUT); // digital
-  digitalWrite(BEEPER, LOW);
 
   // BUTTON press (BUTTON1) pin mode
   // pressed = LOW
   // unpressed = HIGH
   pinMode(BUTTON, INPUT); // digital
   digitalWrite(BUTTON, HIGH);
+}
+
+// Main robot movement loop, runs repeatedly
+void loop()
+{
+  pressToStart();
+
+  // Set up the motor controller
+  Motor rightMotor = {RIGHT_MOTOR_POWER, RIGHT_MOTOR_FORWARD, RIGHT_MOTOR_BACKWARD};
+  Motor leftMotor = {LEFT_MOTOR_POWER, LEFT_MOTOR_FORWARD, LEFT_MOTOR_BACKWARD};
+  MotorController mc(rightMotor, leftMotor, 100);
+
+  // Do the dance
+  while (1)
+  {
+    mc.forward(3000);
+    mc.backward(1000);
+    mc.setSpeed(75);
+    mc.spinLeft(1000);
+    mc.spinRight(2000);
+    mc.setSpeed(100);
+    mc.backward(2000);
+    mc.brake(1000);
+  }
 }
 
 // Beep for the specified amount of time,
@@ -87,26 +110,4 @@ void pressToStart()
   }
 
   beeps(1, 250);
-}
-
-// Main robot movement loop, runs repeatedly
-void loop()
-{
-  pressToStart();
-
-  Motor rightMotor = {RIGHT_MOTOR_POWER, RIGHT_MOTOR_FORWARD, RIGHT_MOTOR_BACKWARD};
-  Motor leftMotor = {LEFT_MOTOR_POWER, LEFT_MOTOR_FORWARD, LEFT_MOTOR_BACKWARD};
-  MotorController mc{rightMotor, leftMotor, 100};
-
-  while (1)
-  {
-    mc.forward(3000);
-    mc.backward(1000);
-    mc.setSpeed(75);
-    mc.spinLeft(1000);
-    mc.spinRight(2000);
-    mc.setSpeed(100);
-    mc.backward(2000);
-    mc.brake(1000);
-  }
 }
