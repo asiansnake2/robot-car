@@ -23,7 +23,7 @@
 // Motor contains 3 port values
 struct Motor
 {
-  int level;
+  int power;
   int forward;
   int backward;
 };

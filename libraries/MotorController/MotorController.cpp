@@ -45,13 +45,13 @@ MotorController::MotorController()
 MotorController::MotorController(const Motor &rightMotor, const Motor &leftMotor, const float &speed)
 {
   // Right motor ports
-  RIGHT_MOTOR_POWER = rightMotor.level;
+  RIGHT_MOTOR_POWER = rightMotor.power;
   RIGHT_MOTOR_FORWARD = rightMotor.forward;
   RIGHT_MOTOR_BACKWARD = rightMotor.backward;
   // Left motor ports
   LEFT_MOTOR_FORWARD = leftMotor.forward;
   LEFT_MOTOR_BACKWARD = leftMotor.backward;
-  LEFT_MOTOR_POWER = leftMotor.level;
+  LEFT_MOTOR_POWER = leftMotor.power;
   // Set speed
   setSpeed(speed);
   // Right motor pin modes
@@ -133,28 +133,28 @@ void MotorController::spinRight(const int &time) const
 
 void MotorController::left(const int &time) const
 {
-  // Disable left motor
-  analogWrite(LEFT_MOTOR_POWER, 0);
-  digitalWrite(LEFT_MOTOR_FORWARD, LOW);
-  digitalWrite(LEFT_MOTOR_BACKWARD, LOW);
   // Enable right motor forward
   analogWrite(RIGHT_MOTOR_POWER, int(m_speed));
   digitalWrite(RIGHT_MOTOR_FORWARD, HIGH);
   digitalWrite(RIGHT_MOTOR_BACKWARD, LOW);
+  // Disable left motor
+  analogWrite(LEFT_MOTOR_POWER, 0);
+  digitalWrite(LEFT_MOTOR_FORWARD, LOW);
+  digitalWrite(LEFT_MOTOR_BACKWARD, LOW);
   // Delay for time
   delay(time);
 }
 
 void MotorController::spinLeft(const int &time) const
 {
-  // Enable right motor forward
-  analogWrite(LEFT_MOTOR_POWER, int(m_speed));
-  digitalWrite(LEFT_MOTOR_FORWARD, HIGH);
-  digitalWrite(LEFT_MOTOR_BACKWARD, LOW);
   // Enable left motor backward
   analogWrite(RIGHT_MOTOR_POWER, int(m_speed));
   digitalWrite(RIGHT_MOTOR_FORWARD, LOW);
   digitalWrite(RIGHT_MOTOR_BACKWARD, HIGH);
+  // Enable right motor forward
+  analogWrite(LEFT_MOTOR_POWER, int(m_speed));
+  digitalWrite(LEFT_MOTOR_FORWARD, HIGH);
+  digitalWrite(LEFT_MOTOR_BACKWARD, LOW);
   // Delay for time
   delay(time);
 }
