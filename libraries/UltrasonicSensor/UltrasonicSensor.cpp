@@ -3,28 +3,10 @@
  * Library for reading from ultrasonic sensor HC-SR04.
  * Created by Brian Tom on March 30, 2018.
  * Released into the public domain.
- *
- * Default constructor assumes the following ports:
- * | Name                   | Port |
- * |------------------------|------|
- * | Ultrasonic Trigger (G) | A0   |
- * | Ultrasonic Echo (RYB)  | A1   |
- * | Beeper                 | D12  |
- * | Button (KEY1)          | D13  |
  ******************************************************************************/
 
 #include "Arduino.h"
 #include "UltrasonicSensor.h"
-
-UltrasonicSensor::UltrasonicSensor()
-{
-  // Ultrasonic sensor ports
-  TRIGGER = A0;
-  ECHO = A1;
-  // Sensor pin modes
-  pinMode(TRIGGER, OUTPUT);
-  pinMode(ECHO, INPUT);
-}
 
 UltrasonicSensor::UltrasonicSensor(const int &trigger, const int &echo)
 {

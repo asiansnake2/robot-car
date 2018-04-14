@@ -38,15 +38,44 @@ void setup()
   // View sensor output in Serial monitor
   Serial.begin(9600);
 
-  // Ultrasonic pin modes
-  pinMode(TRIGGER, OUTPUT);
-  digitalWrite(TRIGGER, LOW);
+  // Beep sound pin mode
+  // mute = LOW
+  // alarm = HIGH
+  pinMode(BEEPER, OUTPUT); // digital
 
-  // BEEPER sound pin mode
-  pinMode(BEEPER, OUTPUT);
+  // BUTTON press (BUTTON1) pin mode
+  // pressed = LOW
+  // unpressed = HIGH
+  pinMode(BUTTON, INPUT); // digital
+  digitalWrite(BUTTON, HIGH);
+}
 
-  // Start BUTTON pin mode
-  pinMode(BUTTON, INPUT);
+void loop()
+{
+  pressToStart();
+
+  UltrasonicSensor sensor(TRIGGER, ECHO);
+  float pulseWidth;
+
+  // Print out distances (delay with beeps)
+  while (1)
+  {
+    pulseWidth = sensor.readPulseWidth();
+    // Print out values to Serial if in range
+    if (pulseWidth > MAX_DISTANCE)
+    {
+      Serial.println("Out of Range");
+    }
+    else
+    {
+      // beep delay changes proportional to distance
+      beeps(1, (float)pulseWidth / 100);
+      Serial.print("Distance (cm): ");
+      Serial.println(sensor.toCentimeters(pulseWidth));
+      Serial.print("Distance (in): ");
+      Serial.println(sensor.toInches(pulseWidth));
+    }
+  }
 }
 
 // Beep with BEEPER for the specified amount of time,
@@ -84,32 +113,4 @@ void pressToStart()
   }
 
   beeps(1, 1000);
-}
-
-void loop()
-{
-  pressToStart();
-
-  UltrasonicSensor sensor{TRIGGER, ECHO};
-  float pulseWidth;
-
-  // Print out distances (delay with beeps)
-  while (1)
-  {
-    pulseWidth = sensor.readPulseWidth();
-    // Print out values to Serial if in range
-    if (pulseWidth > MAX_DISTANCE)
-    {
-      Serial.println("Out of Range");
-    }
-    else
-    {
-      // beep delay changes proportional to distance
-      beeps(1, (float)pulseWidth / 100);
-      Serial.print("Distance (cm): ");
-      Serial.println(sensor.toCentimeters(pulseWidth));
-      Serial.print("Distance (in): ");
-      Serial.println(sensor.toInches(pulseWidth));
-    }
-  }
 }
