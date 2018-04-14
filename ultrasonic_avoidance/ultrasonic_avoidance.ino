@@ -1,7 +1,25 @@
-/*
- * Ultrasonic Avoidance
+/*******************************************************************************
+ * ultrasonic_avoidance.ino
  * Based off KUMAN program for robot car
- */
+ * Created by Brian Tom on March 30, 2018.
+ * Released into the public domain.
+ *
+ * Ports:
+ * | Name                    | Port |
+ * |-------------------------|------|
+ * | Right Motor Power Level | D5   |
+ * | Right Motor Forward     | D6   |
+ * | Right Motor Backward    | D7   |
+ * | Left Motor Forward      | D8   |
+ * | Left Motor Backward     | D9   |
+ * | Left Motor Power Level  | D10  |
+ * | Servo                   | D11  |
+ * | Beeper                  | D12  |
+ * | Button                  | D13  |
+ * | Ultrasonic Trigger      | A0   |
+ * | Ultrasonic Echo         | A1   |
+ *
+ ******************************************************************************/
 
 #include <Servo.h>            // Library for controlling head turning servo
 #include <UltrasonicSensor.h> // Ultrasonic sensor library
@@ -14,16 +32,18 @@ const int RIGHT_MOTOR_BACKWARD = 7;
 const int LEFT_MOTOR_FORWARD = 8;
 const int LEFT_MOTOR_BACKWARD = 9;
 const int LEFT_MOTOR_POWER = 10;
+const int DEFAULT_MOVE_TIME = 100; // milliseconds
+const int DEFAULT_SPEED = 75;
 Motor rightMotor = {RIGHT_MOTOR_POWER, RIGHT_MOTOR_FORWARD, RIGHT_MOTOR_BACKWARD};
 Motor leftMotor = {LEFT_MOTOR_POWER, LEFT_MOTOR_FORWARD, LEFT_MOTOR_BACKWARD};
-MotorController mc(rightMotor, leftMotor, 75);
+MotorController mc(rightMotor, leftMotor, DEFAULT_SPEED);
 
 // Servo for controlling head rotation
 Servo servo;
 const int SERVO = 11;
-const int SERVO_FRONT = 90; // front
-const int SERVO_RIGHT = 3;  // full right = 0
-const int SERVO_LEFT = 177; // full left = 180
+const int SERVO_FRONT = 90; // servo face forward
+const int SERVO_RIGHT = 3;  // servo face full right = 0
+const int SERVO_LEFT = 177; // servo face full left = 180
 
 // Utility pins
 const int BEEPER = 12;
@@ -40,7 +60,8 @@ enum Direction
   Forward,
   Backward,
   Left,
-  Right
+  Right,
+  Brake,
 };
 
 // Definitions
@@ -54,23 +75,28 @@ void setup()
 {
   Serial.begin(9600); // Initialize serial monitor
 
-  pinMode(LEFT_MOTOR_POWER, OUTPUT);     // Define 5 pin for PWM output
-  pinMode(RIGHT_MOTOR_FORWARD, OUTPUT);  // Define 6 pin for the output (PWM)
-  pinMode(RIGHT_MOTOR_BACKWARD, OUTPUT); // Define 7 pin for the output (PWM)
-  pinMode(LEFT_MOTOR_FORWARD, OUTPUT);   // Define 8 pin for the output (PWM)
-  pinMode(LEFT_MOTOR_BACKWARD, OUTPUT);  // Define 9 pin for the output (PWM)
-  pinMode(RIGHT_MOTOR_POWER, OUTPUT);    // Define 10 pin for PWM output
+  // Right motor pin modes
+  pinMode(RIGHT_MOTOR_POWER, OUTPUT);
+  pinMode(RIGHT_MOTOR_FORWARD, OUTPUT);
+  pinMode(RIGHT_MOTOR_BACKWARD, OUTPUT);
+  // Left motor pin modes
+  pinMode(LEFT_MOTOR_FORWARD, OUTPUT);
+  pinMode(LEFT_MOTOR_BACKWARD, OUTPUT);
+  pinMode(LEFT_MOTOR_POWER, OUTPUT);
 
-  pinMode(BUTTON, INPUT);  // Set button as input
-  pinMode(BEEPER, OUTPUT); // Set buzzer as output
+  // Attach servo motor
+  servo.attach(SERVO);
 
-  pinMode(ECHO, INPUT);     // Define the ultrasound Echo pin
-  pinMode(TRIGGER, OUTPUT); // Define the ultrasound Trigger pin
+  // Button, beeper pin modes
+  pinMode(BUTTON, INPUT);
+  pinMode(BEEPER, OUTPUT);
 
-  digitalWrite(BUTTON, HIGH); //Initialize button
-  digitalWrite(BEEPER, LOW);  // set buzzer mute
+  // Ultrasonic pin modes
+  pinMode(ECHO, INPUT);
+  pinMode(TRIGGER, OUTPUT);
 
-  servo.attach(SERVO); // Define the servo motor output 11 pin (PWM)
+  // Button set to unpressed state (=HIGH)
+  digitalWrite(BUTTON, HIGH);
 }
 
 // Main loop
@@ -83,31 +109,25 @@ void loop()
     servo.write(90); // Make the servo motor ready position Prepare the next measurement
     detect();        // Measuring angle and determine which direction to go to
 
-    if (direction == Backward)
+    switch (direction)
     {
-      mc.backward(3000);
-      mc.spinLeft(0); // Move slightly to the left (to prevent stuck in dead end lane)
-      Serial.println("Reverse");
-    }
-
-    if (direction == Right)
-    {
-      mc.backward(0);
-      mc.spinRight(2000);
-      Serial.println("Right");
-    }
-
-    if (direction == Left)
-    {
-      mc.backward(0);
-      mc.spinLeft(2000);
-      Serial.println("Left");
-    }
-
-    if (direction == Forward)
-    {
-      mc.forward(3000);
+    case Forward:
+      mc.forward(DEFAULT_MOVE_TIME);
       Serial.println("Forward");
+    case Backward:
+      mc.backward(DEFAULT_MOVE_TIME);
+      Serial.println("Backward");
+    case Left:
+      mc.spinLeft(DEFAULT_MOVE_TIME);
+      Serial.println("Left");
+    case Right:
+      mc.spinRight(DEFAULT_MOVE_TIME);
+      Serial.println("Right");
+    case Brake:
+      mc.brake(DEFAULT_MOVE_TIME);
+      Serial.println("Brake");
+    case default:
+      Serial.println("Invalid direction.");
     }
   }
 }
@@ -115,15 +135,17 @@ void loop()
 // Measuring three angles (0, 90, 180)
 void detect()
 {
-  distanceFront = measureFront(); // Read in front of the distance
+  // Read front distance
+  distanceFront = measureFront();
 
-  if (distanceFront < 20) // If the front distance less than 6 cm
+  // If the front distance less than 10 cm
+  if (distanceFront < 10)
   {
-    mc.brake(100); // Remove the output data
     mc.backward(500);
   }
 
-  if (distanceFront < 30) // If the front distance less than 10 cm
+  // If the front distance less than 20 cm
+  if (distanceFront < 20)
   {
     mc.brake(100);                // Remove the output data
     distanceLeft = measureLeft(); // Read the left distance
@@ -132,7 +154,7 @@ void detect()
     // delay(stabilizeTime); // Wait for the servo motor to stabilize
 
     // If the left distance and right distance
-    // less than 20 cm move backwards
+    // less than 10 cm move backwards
     if (distanceLeft < 10 && distanceRight < 10)
     {
       direction = Backward; // Walk backwards
